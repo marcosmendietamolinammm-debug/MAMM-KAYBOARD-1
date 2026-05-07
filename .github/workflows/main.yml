@@ -7,16 +7,24 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - name: Python
+      
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-      - name: Build
+          
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install buildozer cython==0.29.33 kivy
+          
+      - name: Build with Buildozer
         uses: ArtemSBulgakov/buildozer-action@v1.6.1
         with:
           command: buildozer android debug
           workdir: .
-      - name: Artifact
+          
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: MAMM-APK
