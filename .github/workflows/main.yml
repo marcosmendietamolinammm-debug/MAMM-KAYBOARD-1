@@ -17,7 +17,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y autoconf automake libtool libffi-dev libssl-dev libltdl-dev openjdk-17-jdk-headless
       - name: Build with Buildozer
-        uses: ArtemSBulgakov/buildozer-action@v1
+        uses: ArtemSBulgakov/buildozer-action@v1.6.1
         with:
           command: buildozer android debug
           workdir: .
