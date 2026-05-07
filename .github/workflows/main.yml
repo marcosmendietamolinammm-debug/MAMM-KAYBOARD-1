@@ -7,11 +7,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-      - name: Build
+      - name: Build with Buildozer
         uses: ArtemSBulgakov/buildozer-action@v1
         with:
           command: buildozer android debug
