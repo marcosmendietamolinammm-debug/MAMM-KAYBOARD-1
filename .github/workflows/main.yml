@@ -7,15 +7,19 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - name: Python Setup
-        uses: actions/setup-python@v4
+      
+      - name: Setup Python 3.10
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-      - name: Run Buildozer
-        uses: ArtemSBulgakov/buildozer-action@v1
+
+      - name: Build with Buildozer (Using MAMM-SPEC)
+        uses: ArtemSBulgakov/buildozer-action@v1.6.1
         with:
+          # Aquí es donde tu tecnología toma el control:
           command: buildozer android debug
           workdir: .
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
