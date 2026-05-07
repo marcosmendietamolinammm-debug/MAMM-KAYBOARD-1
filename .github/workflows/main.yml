@@ -5,29 +5,47 @@ on:
   workflow_dispatch:
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
-      - name: Checkout source code
+      - name: 📥 Checkout source code
         uses: actions/checkout@v4
 
-      - name: Setup Python
+      - name: 🐍 Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      - name: Install system dependencies (MAMM-Resonance-Safe)
+      - name: 🛠️ Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y autoconf automake libtool libffi-dev libssl-dev libltdl-dev openjdk-17-jdk-headless
-
-      - name: Build APK with Buildozer
-        uses: ArtemSBulgakov/buildozer-action@v1
-        with:
-          # Comando optimizado para tu API 35 y NDK 25c
-          command: buildozer android debug
-          workdir: .
-
-      - name: Upload APK as artifact
+          sudo apt-get install -y \
+            autoconf \
+            automake \
+            libtool \
+            libffi-dev \
+            libssl-dev \
+            libltdl-dev \
+            openjdk-17-jdk-headless \
+            build-essential \
+            git \
+            python3-dev \
+            ffmpeg \
+            libsdl2-dev \
+            libsdl2-image-dev \
+            libsdl2-mixer-dev \
+            libsdl2-ttf-dev \
+            libportmidi-dev \
+            libswscale-dev \
+            libavformat-dev \
+            libavcodec-dev \
+            zlib1g-dev
+          pip install --upgrade pip
+          pip install Cython==3.0.11 buildozer
+      - name: 📦 Build APK with Buildozer
+        run: |
+          yes | buildozer android debug
+        
+      - name: ⬆️ Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: MAMM-KEYBOARD-1-APK
