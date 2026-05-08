@@ -1,0 +1,72 @@
+name: 🔥 Build & Sign MAMM-KEYBOARD-1
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout source code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: 💾 Cache Buildozer & Android SDK
+        uses: actions/cache@v4
+        with:
+          path: |
+            .buildozer
+            ~/.android
+            ~/.cache/pip
+          key: ${{ runner.os }}-buildozer-${{ hashFiles('buildozer.spec') }}
+          restore-keys: |
+            ${{ runner.os }}-buildozer-
+
+      - name: 🛠️ Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            autoconf \
+            automake \
+            libtool \
+            libffi-dev \
+            libssl-dev \
+            libltdl-dev \
+            openjdk-17-jdk-headless \
+            git \
+            wget \
+            unzip
+
+      - name: 📦 Build APK with Buildozer
+        id: buildozer
+        uses: ArtemSBulgakov/buildozer-action@v1
+        with:
+          command: buildozer android debug
+          workdir: .
+
+      - name: 🔑 Sign APK (opcional)
+        if: env.KEYSTORE_BASE64 != ''
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 -d > mamm.keystore
+          APK=$(ls ./bin/*.apk)
+          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
+            -keystore mamm.keystore -storepass "$KEYSTORE_PASSWORD" \
+            -keypass "$KEY_PASSWORD" "$APK" "$KEY_ALIAS"
+          rm mamm.keystore
+
+      - name: ⬆️ Upload APK as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MAMM-KEYBOARD-1-APK
+          path: ./bin/*.apk
