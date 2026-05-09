@@ -13,14 +13,14 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-      - name: 🛠️ Herramientas de Compilación Pesada
+      - name: 🛠️ Herramientas de Fuerza (MAMM-Engine)
         run: |
           sudo apt-get update
           sudo apt-get install -y autoconf automake libtool libffi-dev libssl-dev libltdl-dev openjdk-17-jdk-headless
           pip install Cython==3.0.11 buildozer
-      - name: 📦 Construcción MAMM (Fase de Resistencia)
+      - name: 📦 Construcción Directa
         run: |
-          # El comando 'yes' es vital para que no se trabe en las licencias
+          # Aceptación automática de licencias para evitar bloqueos
           yes | buildozer android debug
       - name: ⬆️ Entrega APK
         uses: actions/upload-artifact@v4
