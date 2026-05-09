@@ -10,13 +10,14 @@ version.code = 3
 # --- Requisitos completos de MAMM-KEYBOARD-1 ---
 requirements = python3,kivy==2.2.1,setuptools,urllib3<2.0.0,six,plyer,pyjnius,ujson,cython==3.0.11,openssl,requests,android,pyzbar,qrcode,Pillow,SpeechRecognition,pyttsx3
 
-# --- Permisos esenciales ---
+# --- Permisos esenciales (incluido Android 15 Foreground Service) ---
 android.permissions = \
     INTERNET,\
     VIBRATE,\
     WAKE_LOCK,\
     SYSTEM_ALERT_WINDOW,\
     FOREGROUND_SERVICE,\
+    FOREGROUND_SERVICE_DATA_SYNC,\
     RECEIVE_BOOT_COMPLETED,\
     MANAGE_EXTERNAL_STORAGE,\
     REQUEST_INSTALL_PACKAGES,\
@@ -25,11 +26,14 @@ android.permissions = \
     CAMERA,\
     RECORD_AUDIO
 
-# --- Android 15 (API 35) ---
-android.api = 35
+# --- Versiones de Android (corregidas para compilación estable) ---
+android.api = 34
 android.minapi = 21
-android.sdk = 35
+android.sdk = 33
 android.ndk = 25c
+
+# --- Tipo de Foreground Service para Android 15 ---
+android.manifest_extra = | <service android:name=".ServiceMamm" android:foregroundServiceType="dataSync|shortTasks" android:exported="false"></service>
 
 p4a.bootstrap = sdl2
 p4a.branch = develop
@@ -74,7 +78,6 @@ p4a.blacklist =
 
 p4a.optimize_python = 1
 android.skip_update = False
-android.accept_sdk_license = True
 
 [buildozer]
 build_dir = .buildozer
