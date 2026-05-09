@@ -1,3 +1,1 @@
-Protocolo Victoria: Latencia Activa
-38.440000
-E=m*62^2
+PULSO-ESTABLE-Sat May  9 00:15:09 UTC 2026
