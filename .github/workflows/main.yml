@@ -7,22 +7,20 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
-      - name: 📥 Checkout
+      - name: Checkout
         uses: actions/checkout@v4
-      - name: 🐍 Python
+      - name: Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-      - name: 🛠️ Herramientas de Fuerza (MAMM-Engine)
+      - name: Tools
         run: |
           sudo apt-get update
           sudo apt-get install -y autoconf automake libtool libffi-dev libssl-dev libltdl-dev openjdk-17-jdk-headless
           pip install Cython==3.0.11 buildozer
-      - name: 📦 Construcción Directa
-        run: |
-          # Aceptación automática de licencias para evitar bloqueos
-          yes | buildozer android debug
-      - name: ⬆️ Entrega APK
+      - name: Build
+        run: yes | buildozer android debug
+      - name: Upload
         uses: actions/upload-artifact@v4
         with:
           name: MAMM-KEYBOARD-1-APK
