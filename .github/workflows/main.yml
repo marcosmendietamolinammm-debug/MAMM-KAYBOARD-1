@@ -33,6 +33,7 @@ jobs:
             libffi-dev \
             libssl-dev \
             libltdl-dev \
+            gettext \
             openjdk-17-jdk-headless \
             git \
             wget \
@@ -42,7 +43,7 @@ jobs:
       - name: 📱 Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: 🔧 Install Android NDK (r25c)
+      - name: 🔧 Install Android NDK 25c
         run: |
           yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "ndk;25.2.9519653"
         env:
@@ -51,7 +52,11 @@ jobs:
       - name: 📦 Build APK with Buildozer
         run: |
           export PATH=$PATH:$HOME/.local/bin
+          export ANDROID_HOME=/usr/local/lib/android/sdk
+          export ANDROID_SDK_ROOT=/usr/local/lib/android/sdk
+          export ANDROID_NDK_HOME=/usr/local/lib/android/sdk/ndk/25.2.9519653
           export ANDROIDNDK=/usr/local/lib/android/sdk/ndk/25.2.9519653
+          export ANDROIDAPI=35
           buildozer android debug
 
       - name: ⬆️ Upload APK as artifact
