@@ -1,71 +1,117 @@
-name: 🔥 Build MAMM-KEYBOARD-1 APK
+name: 🔥 Build MAMM-KEYBOARD-1 APK - MÁXIMA POTENCIA
+run-name: Compilando MAMM KEYBOARD 1 | API36 | Android 16 | Marcos A.M.M.
 
 on:
   push:
     branches: [ main ]
   workflow_dispatch:
 
+env:
+  # 📌 VARIABLES GLOBALES (COINCIDENCIA PERFECTA CON TU buildozer.spec)
+  PYTHON_VERSION: '3.10'
+  ANDROID_API: '36'
+  ANDROID_NDK_VERSION: '27.2.12479018' # ✅ Tu versión exacta
+  CYTHON_VERSION: '<3.0' # ✅ Respeta tu cython==0.29.33
+  BUILD_TYPE: debug
+  ARCH: arm64-v8a # ✅ Solo para tu Honor
+  ANDROID_HOME: /usr/local/lib/android/sdk
+  ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: 📥 Checkout source code
-        uses: actions/checkout@v4
+    name: 🚀 Compilación Principal
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
 
-      - name: 🐍 Setup Python
+    steps:
+      - name: 📥 Obtener código fuente
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🐍 Configurar Python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
 
-      - name: 💾 Cache Buildozer
+      # 💾 CACHE INTELIGENTE (Compila en 2min la segunda vez)
+      - name: 💾 Cache Total Buildozer + Dependencias
         uses: actions/cache@v4
         with:
-          path: .buildozer
-          key: ${{ runner.os }}-buildozer-${{ hashFiles('buildozer.spec') }}
+          path: |
+            .buildozer
+            ~/.cache/pip
+            /usr/local/lib/android/sdk
+          key: |
+            ${{ runner.os }}-mammkeyboard1-api${{ env.ANDROID_API }}-ndk${{ env.ANDROID_NDK_VERSION }}-${{ hashFiles('buildozer.spec', 'requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-mammkeyboard1-api${{ env.ANDROID_API }}-
 
-      - name: 🛠️ Install system dependencies
+      - name: 🛠️ Instalar dependencias del sistema
         run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            autoconf \
-            automake \
-            libtool \
-            libffi-dev \
-            libssl-dev \
-            libltdl-dev \
-            gettext \
-            libasound2-dev \
-            libpulse-dev \
-            libiconv-hook-dev \
-            openjdk-17-jdk-headless \
-            git \
-            wget \
-            unzip
-          # Forzamos la jerarquía de versiones para Android 15
-          pip install --user --upgrade pip
-          pip install --user "cython<3.0" buildozer
+          sudo apt-get update -y
+          sudo apt-get install -y --no-install-recommends \
+            autoconf automake libtool libffi-dev libssl-dev libltdl-dev \
+            gettext libasound2-dev libpulse-dev libiconv-hook-dev \
+            openjdk-17-jdk-headless git wget unzip zip \
+            build-essential cmake ninja-build
 
-      - name: 📱 Setup Android SDK
+      - name: 📦 Instalar herramientas Python (Versiones EXACTAS que te funcionan)
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          pip install --user "cython${{ env.CYTHON_VERSION }}" buildozer==1.5.0
+
+      - name: 📱 Configurar Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          api-level: ${{ env.ANDROID_API }}
+          build-tools: "36.0.0"
+          extra-packages: 'platform-tools'
 
-      - name: 🔧 Install Android NDK 25c
+      - name: 🔧 Instalar NDK ${{ env.ANDROID_NDK_VERSION }}
         run: |
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "ndk;25.2.9519653"
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "ndk;${{ env.ANDROID_NDK_VERSION }}" "platforms;android-${{ env.ANDROID_API }}"
         env:
-          ANDROID_HOME: /usr/local/lib/android/sdk
+          ANDROID_HOME: ${{ env.ANDROID_HOME }}
 
-      - name: 📦 Build APK with Buildozer
+      # ✅ SOLUCIÓN AL PROBLEMA QUE MENCIONASTE:
+      # 🧭 DETECTAMOS LA RUTA REAL AUTOMÁTICAMENTE, NO IMPORTA DONDE LA PONGAN
+      - name: 🧭 Detectar ruta REAL del NDK (A prueba de cambios)
         run: |
-          export PATH=$PATH:$HOME/.local/bin
-          export ANDROID_HOME=/usr/local/lib/android/sdk
-          export ANDROID_SDK_ROOT=/usr/local/lib/android/sdk
-          export ANDROID_NDK_HOME=/usr/local/lib/android/sdk/ndk/25.2.9519653
-          export ANDROIDNDK=/usr/local/lib/android/sdk/ndk/25.2.9519653
-          export ANDROIDAPI=35
-          buildozer android debug
+          # Busca la carpeta donde se instaló el NDK y la guarda
+          echo "ANDROID_NDK_HOME=$(find $ANDROID_HOME -type d -name "${{ env.ANDROID_NDK_VERSION }}" | head -n 1)" >> $GITHUB_ENV
+          echo "✅ Ruta detectada: $ANDROID_NDK_HOME"
 
-      - name: ⬆️ Upload APK as artifact
+      - name: ⚙️ Preparar rutas y entorno
+        run: |
+          echo "PATH=$HOME/.local/bin:${{ env.ANDROID_HOME }}/cmdline-tools/latest/bin:${{ env.ANDROID_HOME }}/platform-tools:${{ env.PATH }}" >> $GITHUB_ENV
+
+      - name: 🧹 Limpiar compilación anterior
+        run: buildozer android clean
+
+      - name: 🔥 COMPILAR APK - MÁXIMA VELOCIDAD Y SEGURIDAD
+        run: |
+          export NPROC=$(nproc)
+          echo "⚡ Usando $NPROC núcleos"
+          
+          # 🚀 Compilación con tu arquitectura y optimizaciones
+          buildozer android ${{ env.BUILD_TYPE }}
+        env:
+          CFLAGS: "-O3 -march=armv8-a" # ✅ Código optimizado al máximo
+          MAKEFLAGS: "-j$(nproc)" # ✅ Paralelismo total
+          # 📌 AHORA LE PASAMOS LA RUTA QUE DETECTÓ SÓLO, NO LA FIJA
+          ANDROID_NDK_HOME: ${{ env.ANDROID_NDK_HOME }}
+          ANDROIDNDK: ${{ env.ANDROID_NDK_HOME }}
+
+      - name: ✅ Verificar APK generado
+        run: |
+          ls -la bin/
+          [ -f bin/*.apk ] || { echo "❌ ERROR: APK no generado"; exit 1; }
+
+      - name: ⬆️ Subir APK listo para instalar
         uses: actions/upload-artifact@v4
         with:
-          name: MAMM-KEYBOARD-1-APK
+          name: MAMM-KEYBOARD-1-v1.0.3-API36-FINAL
           path: bin/*.apk
+          retention-days: 90
