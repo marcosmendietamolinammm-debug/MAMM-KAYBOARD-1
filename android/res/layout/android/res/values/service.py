@@ -9,94 +9,100 @@ from android.runnable import run_on_ui_thread
 import android.view
 import jnius
 
+# --------------------------
+# 🛡️ MOTOR SILENCIOSO MAMM
+# FRECUENCIAS: 60 Hz (reposo) | 62 Hz (activo)
+# --------------------------
 PythonActivity = jnius.autoclass('org.kivy.android.PythonActivity')
-InputMethodManager = jnius.autoclass('android.view.inputmethod.InputMethodManager')
-Context = jnius.autoclass('android.content.Context')
 WindowManager = jnius.autoclass('android.view.WindowManager')
 
 
 class TeclaBase(ButtonBehavior, Widget):
-    """Clase base para todas las teclas: DETECTA EL TOQUE Y CAMBIA FRECUENCIA"""
+    """DETECCIÓN DE TECLA: AQUÍ CAMBIA LA FRECUENCIA"""
     def on_press(self):
-        # ✅ AL APLASTAR CUALQUIER TECLA: ACTIVAR 62 Hz
-        App.get_running_app().establecer_frecuencia(62.0)
+        # ✅ AL TOCAR: SALTA A 62 Hz
+        App.get_running_app().set_frecuencia(62.0)
         super().on_press()
 
     def on_release(self):
-        # ✅ AL SOLTAR / DEJAR DE USAR: VOLVER A 60 Hz
-        Clock.schedule_once(lambda dt: App.get_running_app().establecer_frecuencia(60.0), 0.5)
+        # ✅ AL SOLTAR: VUELVE A 60 Hz EN 0.5s
+        Clock.schedule_once(lambda dt: App.get_running_app().set_frecuencia(60.0), 0.5)
         super().on_release()
 
 
-class MammKeyboardService(Widget):
+class MammMotor(Widget):
     def __init__(self, **kwargs):
-        super(MammKeyboardService, self).__init__(**kwargs)
-        self.frecuencia_actual = 60.0  # ⚙️ FRECUENCIA BASE INICIAL: 60 Hz
-        self._init_motor()
-        self._ciclo_activo = Clock.schedule_interval(self._ejecutar_motor, 1.0 / self.frecuencia_actual)
+        super(MammMotor, self).__init__(**kwargs)
+        # ⚙️ FRECUENCIA BASE ARRANQUE: 60 Hz
+        self.frecuencia_actual = 60.0
+        self.motor_activo = True
+        self._iniciar_estructura()
+        # 🚀 MOTOR CORRIENDO SIEMPRE
+        self.bucle_principal = Clock.schedule_interval(self.ejecutar, 1.0 / self.frecuencia_actual)
 
-    def _init_motor(self):
+    def _iniciar_estructura(self):
+        """Fondo base del sistema"""
         with self.canvas:
             Color(0.02, 0.02, 0.03, 1)
-            self.rect = Rectangle(size=self.size, pos=self.pos)
-        self.bind(size=self._update_rect, pos=self._update_rect)
+            self.fondo = Rectangle(size=self.size, pos=self.pos)
+        self.bind(size=self._actualizar, pos=self._actualizar)
 
-    def _update_rect(self, *args):
-        self.rect.pos = self.pos
-        self.rect.size = self.size
+    def _actualizar(self, *args):
+        self.fondo.pos = self.pos
+        self.fondo.size = self.size
 
-    def _ejecutar_motor(self, dt):
-        """Bucle principal que corre a la frecuencia definida"""
-        # Aquí corre tu lógica de resonancia, escaneo, generación PDF, etc.
-        pass
-
-    def cambiar_frecuencia_motor(self, hz):
-        """Controlador maestro: 60 Hz reposo | 62 Hz activo"""
+    def cambiar_frecuencia(self, hz):
+        """CONTROL MAESTRO DE FRECUENCIA"""
         if self.frecuencia_actual != hz:
             self.frecuencia_actual = hz
-            if self._ciclo_activo:
-                self._ciclo_activo.cancel()
-            self._ciclo_activo = Clock.schedule_interval(self._ejecutar_motor, 1.0 / self.frecuencia_actual)
+            if self.bucle_principal:
+                self.bucle_principal.cancel()
+            self.bucle_principal = Clock.schedule_interval(self.ejecutar, 1.0 / self.frecuencia_actual)
+
+    def ejecutar(self, dt):
+        """AQUÍ CORRE TU LÓGICA: RESONANCIA, PDF, SEGURIDAD"""
+        # E = m * f²  -> TU FÓRMULA EXCLUSIVA
+        if self.motor_activo:
+            pass  # Aquí irá tu código interno
 
     @run_on_ui_thread
-    def mantener_activo(self):
+    def mantener_encendido(self):
+        """ESTACIÓN DE SERVICIO: NUNCA SE APAGA"""
         activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
     @run_on_ui_thread
-    def ocultar_barras_sistema(self):
+    def ocultar_barras(self):
+        """PANTALLA LIMPIA"""
         vista = activity.getWindow().getDecorView()
         vista.setSystemUiVisibility(
             android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
             android.view.View.SYSTEM_UI_FLAG_FULLSCREEN |
-            android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-            android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
-            android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
         )
 
 
 class MammKeyboardApp(App):
     def build(self):
-        self.title = "MAMM KEYBOARD 1"
-        self.service = MammKeyboardService()
-        self.service.mantener_activo()
-        self.service.ocultar_barras_sistema()
-        return self.service
+        self.title = "MAMM-KEYBOARD-1"
+        self.motor = MammMotor()
+        self.motor.mantener_encendido()
+        self.motor.ocultar_barras()
+        return self.motor
 
-    def establecer_frecuencia(self, hz):
-        """LLAVE MAESTRA: LLAMADA DESDE CUALQUIER TECLA"""
-        self.service.cambiar_frecuencia_motor(hz)
+    def set_frecuencia(self, hz):
+        """LLAVE DE CONTROL PARA TODAS LAS TECLAS"""
+        self.motor.cambiar_frecuencia(hz)
 
     def on_pause(self):
-        # ✅ AL MINIMIZAR: MANTENER 60 Hz (ESTACIÓN DE SERVICIO ACTIVA)
-        self.establecer_frecuencia(60.0)
+        """AL SALIR O MINIMIZAR: SIGUE EN 60 Hz ACTIVO"""
+        self.set_frecuencia(60.0)
         return True
 
     def on_resume(self):
-        # ✅ AL VOLVER: ARRANCA EN 60 Hz HASTA QUE TOQUES
-        self.establecer_frecuencia(60.0)
-        self.service.mantener_activo()
-        self.service.ocultar_barras_sistema()
+        """AL VOLVER: LISTO EN 60 Hz"""
+        self.set_frecuencia(60.0)
+        self.motor.mantener_encendido()
 
 
 if __name__ == "__main__":
