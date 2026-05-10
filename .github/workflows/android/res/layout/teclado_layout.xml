@@ -1,1 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:baselineAligned="false"
+    android:background="#050508"
+    android:clipToPadding="false"
+    android:clipChildren="false"
+    android:fitsSystemWindows="false"
+    android:windowSoftInputMode="adjustResize|stateAlwaysVisible"
+    android:id="@+id/mamm_keyboard_container"
+    android:layerType="hardware"
+    android:elevation="0dp"
+    android:hapticFeedbackEnabled="true"
+    tools:targetApi="36">
+
+    <View
+        android:id="@+id/kivy_root_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
+
+</LinearLayout>
 
