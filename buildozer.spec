@@ -41,6 +41,35 @@ android.permissions =
 android.add_resources = android/res
 android.add_src = org
 
+# ==================================================
+# 🛡️ LO QUE FALTABA: IDENTIDAD DE APLICACIÓN
+# ==================================================
+android.manifest_application = 
+    android:allowBackup="true"
+    android:icon="@mipmap/ic_launcher"
+    android:label="@string/app_name"
+    android:roundIcon="@mipmap/ic_launcher_round"
+    android:supportsRtl="true"
+    android:theme="@style/Theme.AppCompat.NoActionBar"
+    android:extractNativeLibs="false"
+    android:hasCode="true"
+
+# ==================================================
+# 🚀 LO QUE FALTABA: ACTIVIDAD PRINCIPAL (ÍCONO EN MENÚ)
+# ==================================================
+android.manifest_activities = 
+    <activity
+        android:name="org.kivy.android.PythonActivity"
+        android:exported="true"
+        android:launchMode="singleTop"
+        android:configChanges="keyboard|keyboardHidden|orientation|screenSize|smallestScreenSize"
+        android:windowSoftInputMode="adjustResize">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+    </activity>
+
 # --- DECLARACIÓN TECLADO - MEJORADA Y CERTIFICADA PARA ANDROID 16 ---
 android.manifest_placeholders = 
     <service 
@@ -134,4 +163,4 @@ build_dir = .buildozer
 bin_dir = ./bin
 log_level = 2
 warn_on_root = 0
-parallel_jobs = 8                 # ✅ USA TODOS LOS NÚCLEOS DE TU PC PARA COMPILAR RÁPIDO
+parallel_jobs = 8
