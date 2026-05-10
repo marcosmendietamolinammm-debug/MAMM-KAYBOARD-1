@@ -34,11 +34,16 @@ jobs:
             libssl-dev \
             libltdl-dev \
             gettext \
+            libasound2-dev \
+            libpulse-dev \
+            libiconv-hook-dev \
             openjdk-17-jdk-headless \
             git \
             wget \
             unzip
-          pip install --user buildozer cython
+          # Forzamos la jerarquía de versiones para Android 15
+          pip install --user --upgrade pip
+          pip install --user "cython<3.0" buildozer
 
       - name: 📱 Setup Android SDK
         uses: android-actions/setup-android@v3
