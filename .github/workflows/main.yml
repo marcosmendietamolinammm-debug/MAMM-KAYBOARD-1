@@ -1,5 +1,5 @@
 name: 🔥 Build MAMM-KEYBOARD-1 APK - TOPE ABSOLUTO
-run-name: 🚀 MÁXIMA POTENCIA | API35 | Android15 | Marcos A.M.M. | TOPE
+run-name: 🚀 MÁXIMA POTENCIA | API35 | Android15 | Marcos A.M.M. | LISTO
 
 on:
   push:
@@ -10,13 +10,12 @@ env:
   PYTHON_VERSION: '3.10'
   ANDROID_API: '35'
   ANDROID_NDK_VERSION: '26b'
-  CYTHON_VERSION: '<3.0'
+  CYTHON_VERSION: '0.29.33'          # ✅ Versión ÚNICA y FIJA
   BUILD_TYPE: debug
   ARCH: arm64-v8a
   ANDROID_HOME: /usr/local/lib/android/sdk
   ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
   # ⚡ VARIABLES DE POTENCIA AL MÁXIMO
-  NPROC: '16'
   GRADLE_MAX_WORKERS: '16'
   OPTIMIZATION_LEVEL: '3'
   USE_LTO: '1'
@@ -25,16 +24,8 @@ env:
 jobs:
   build:
     name: 💥 COMPILACIÓN AL LÍMITE - TECNOLOGÍA MAMM
-    runs-on: ubuntu-24.04
-    timeout-minutes: 20  # ⏱️ MÁS RÁPIDO, TIEMPO REDUCIDO POR POTENCIA
-    # 🔧 RECURSOS AL TOPE
-    resources:
-      requests:
-        cpu: '16'
-        memory: '32GB'
-      limits:
-        cpu: '16'
-        memory: '32GB'
+    runs-on: ubuntu-24.04             # ✅ Estándar válido (cambiarás a ubuntu-latest-16-core cuando tengas acceso)
+    timeout-minutes: 20
 
     steps:
       - name: 📥 Obtener código fuente COMPLETO
@@ -77,12 +68,12 @@ jobs:
             libopenblas-dev libatlas-base-dev liblapack-dev \
             gcc-14 g++-14 clang-18 lld
 
-      # 📦 VERSIONES CERTIFICADAS + COMPILADORES MÁS MODERNOS
-      - name: 📦 Instalar herramientas - COMPILADORES DE ÚLTIMA GENERACIÓN
+      # 📦 ✅ VERSIONES UNIFICADAS (ELIMINADO CONFLICTO DE CYTHON)
+      - name: 📦 Instalar herramientas - VERSIONES CERTIFICADAS ÚNICAS
         run: |
           python -m pip install --upgrade pip setuptools wheel virtualenv
-          pip install --user "cython${{ env.CYTHON_VERSION }}" buildozer==1.5.0 Cython==0.29.33
-          pip install --user --upgrade numpy==1.26.4 wheel setuptools
+          pip install --user Cython==${{ env.CYTHON_VERSION }} buildozer==1.5.0
+          pip install --user --upgrade numpy==1.26.4
 
       # 📱 SDK CONFIGURADO CON HERRAMIENTAS MÁS RÁPIDAS
       - name: 📱 Configurar Android SDK API ${{ env.ANDROID_API }}
@@ -125,42 +116,39 @@ jobs:
           rm -rf .buildozer/bin/* .buildozer/android/platform/build/* ~/.gradle/caches/*
           find . -type f -name "*.pyc" -delete
 
-      # 🔥 AQUÍ ESTÁ EL TOPE ABSOLUTO - FLAGS DE COMPILACIÓN AL LÍMITE
+      # 🔥 ✅ ARQUITECTURA EXACTA PARA TU HONOR: `crc+crypto`
       - name: 🔥 COMPILACIÓN AL TOPE - MOTOR DE RESONANCIA MAMM
         run: |
           export NPROC=$(nproc)
           echo "⚡ POTENCIA: $NPROC núcleos | ARCH: ${{ env.ARCH }} | OPT: NIVEL MÁXIMO"
-          buildozer android ${{ env.BUILD_TYPE }} --verbose --debug
+          buildozer android ${{ env.BUILD_TYPE }} --verbose
         env:
-          # 🚀 OPTIMIZACIÓN EXTREMA PARA TU HONOR MAGIC 7 LITE
-          CFLAGS: "-O3 -march=armv8.2-a+crypto+simd -mtune=cortex-a76.cortex-a55 -ffast-math -fomit-frame-pointer -flto=auto -fuse-linker-plugin -funroll-loops -fvect-cost-model=unlimited"
-          CXXFLAGS: "-O3 -march=armv8.2-a+crypto+simd -mtune=cortex-a76.cortex-a55 -ffast-math -fomit-frame-pointer -flto=auto -fuse-linker-plugin -funroll-loops"
-          LDFLAGS: "-Wl,--hash-style=both -Wl,-O3 -Wl,--as-needed -flto=auto -fuse-linker-plugin"
+          # 🚀 ✅ FLAGS CORREGIDOS: ARMV8.2-A + CRC + CRYPTO (LATENCIA NULA)
+          CFLAGS: "-O3 -march=armv8.2-a+crc+crypto -mtune=cortex-a76.cortex-a55 -ffast-math -fomit-frame-pointer -flto=auto -fuse-linker-plugin -funroll-loops"
+          CXXFLAGS: "-O3 -march=armv8.2-a+crc+crypto -mtune=cortex-a76.cortex-a55 -ffast-math -fomit-frame-pointer -flto=auto -fuse-linker-plugin"
+          LDFLAGS: "-Wl,--hash-style=both -Wl,-O3 -Wl,--as-needed -flto=auto"
           MAKEFLAGS: "-j16 -l16 -s"
           ANDROID_NDK_HOME: ${{ env.ANDROID_NDK_HOME }}
           ANDROIDNDK: ${{ env.ANDROID_NDK_HOME }}
-          # ⚙️ GRADLE AL MÁXIMO RENDIMIENTO
-          GRADLE_OPTS: "-Dorg.gradle.daemon=true -Dorg.gradle.parallel=true -Dorg.gradle.workers.max=16 -Dorg.gradle.caching=true -Dorg.gradle.configureondemand=true -Xmx16g -Xms4g"
+          # ⚙️ ✅ MEMORIA GRADLE OPTIMIZADA: -Xmx24g (deja aire al sistema)
+          GRADLE_OPTS: "-Dorg.gradle.daemon=true -Dorg.gradle.parallel=true -Dorg.gradle.workers.max=16 -Dorg.gradle.caching=true -Xmx24g -Xms4g"
           # 🧠 ACTIVACIÓN DE TECNOLOGÍAS AVANZADAS
           P4A_DEBUG: '0'
           P4A_OPTIMIZE_PYTHON: '3'
           P4A_PYC_OPTIMIZE: '2'
-          P4A_USE_LEGACY_TOOLCHAIN: '0'
-          P4A_FORCE_ARMEABI_V7A: '0'
 
       # ✅ VERIFICACIÓN DE CALIDAD
       - name: ✅ Verificación FINAL - TECNOLOGÍA CERTIFICADA
         run: |
           ls -lha bin/
           du -sh bin/*.apk
-          file bin/*.apk
           [ -f bin/*.apk ] || { echo "❌ ERROR"; exit 1; }
-          echo "✅ APK GENERADA AL TOPE | TECNOLOGÍA MAMM PERFECTA"
+          echo "✅ APK GENERADA | MOTOR 60/62Hz LISTO | OBRA MAESTRA"
 
       # ⬆️ ENTREGA CON TU NOMBRE DE MÁXIMA POTENCIA
       - name: ⬆️ Subir APK - EDICIÓN TOPE ABSOLUTO
         uses: actions/upload-artifact@v4
         with:
-          name: MAMM-KEYBOARD-1-v1.0.3-API35-TOPE-ABSOLUTO
+          name: MAMM-KEYBOARD-1-v1.0.3-API35-TOPE-LISTO
           path: bin/*.apk
           retention-days: 120
