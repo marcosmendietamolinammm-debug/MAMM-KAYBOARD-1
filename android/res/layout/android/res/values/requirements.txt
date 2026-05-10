@@ -1,11 +1,19 @@
+python3
 kivy==2.2.1
-pyjnius
-plyer
-pillow
-qrcode
-pyzbar
-speechrecognition
-pyttsx3
-requests
+setuptools
 urllib3<2.0.0
+six
+plyer
+pyjnius
+ujson
+cython==0.29.33
+openssl
+requests
+android
+pyzbar
+qrcode
+Pillow
+SpeechRecognition
+pyttsx3
+
 
