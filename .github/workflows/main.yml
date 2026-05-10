@@ -1,68 +1,143 @@
-name: 📦 Build APK
+# ============================================================================
+# MAMM-KEYBOARD-1 - WORKFLOW DE COMPILACIÓN ANDROID
+# ARQUITECTO: MARCOS ABEL MENDIETA MOLINA
+# ============================================================================
+name: 🔥 Build MAMM-KEYBOARD-1
 
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  workflow_dispatch:  # permite ejecución manual
+  workflow_dispatch:        # Permite lanzar el build manualmente desde GitHub
+
+# ============================================================================
+# CONFIGURACIÓN GLOBAL DEL ENTORNO
+# ============================================================================
+env:
+  # Ruta del SDK que prepararemos manualmente (evita que Buildozer descargue uno nuevo)
+  ANDROID_SDK_ROOT: /home/runner/android-sdk
+  # Variables para que Buildozer encuentre el SDK
+  ANDROID_HOME: /home/runner/android-sdk
+  # Activamos la aceptación de licencias a nivel de entorno (refuerzo)
+  ANDROID_SDK_LICENSE: accepted
 
 jobs:
-  build-android:
+  build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        # Solo arm64-v8a para reducir tiempo y tamaño
-        arch: [ arm64-v8a ]
-
     steps:
-      - name: 🛎️ Checkout del código
+      # -----------------------------------------------------------------------
+      # 1. CHECKOUT DEL CÓDIGO FUENTE
+      # -----------------------------------------------------------------------
+      - name: 📥 Checkout source code
         uses: actions/checkout@v4
 
-      - name: 🐍 Configurar Python 3.9
+      # -----------------------------------------------------------------------
+      # 2. CONFIGURAR PYTHON 3.9
+      # -----------------------------------------------------------------------
+      - name: 🐍 Setup Python 3.9
         uses: actions/setup-python@v5
         with:
           python-version: '3.9'
 
-      - name: 📦 Instalar dependencias del sistema
+      # -----------------------------------------------------------------------
+      # 3. DEPENDENCIAS DEL SISTEMA OPERATIVO
+      # -----------------------------------------------------------------------
+      - name: 🛠️ Dependencias del sistema
         run: |
-          sudo apt-get update -y
-          sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip \
-            autoconf libtool pkg-config zlib1g-dev libncurses5-dev \
-            libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev \
-            libltdl-dev libusb-1.0-0-dev
+          sudo apt-get update -qq
+          sudo apt-get install -y openjdk-17-jdk git zip unzip libffi-dev libssl-dev libltdl-dev
 
-      - name: 🔧 Instalar Buildozer y Cython
+      # -----------------------------------------------------------------------
+      # 4. INSTALAR BUILDOZER Y CYTHON
+      # -----------------------------------------------------------------------
+      - name: 📦 Instalar Buildozer y Cython
         run: |
-          pip install --upgrade pip setuptools wheel
-          pip install --upgrade Cython==0.29.33 buildozer
+          pip install --upgrade pip
+          pip install "cython<3.0" buildozer
 
-      - name: 📥 Preparar SDK de Android y aceptar licencias
+      # -----------------------------------------------------------------------
+      # 5. PREPARAR SDK DE ANDROID PERSONALIZADO Y ACEPTAR LICENCIAS
+      #    Este paso es el núcleo que evita el error de licencias.
+      # -----------------------------------------------------------------------
+      - name: 🔧 Preparar SDK y forzar licencias
         run: |
-          export ANDROID_SDK_ROOT=$HOME/.buildozer/android/platform/android-sdk
+          # Usamos la ruta definida en las variables de entorno
+          export ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT
           mkdir -p $ANDROID_SDK_ROOT
-          # Descargar command-line tools solo si no existe sdkmanager
-          if [ ! -f "$ANDROID_SDK_ROOT/tools/bin/sdkmanager" ]; then
-            echo "Descargando Android command-line tools..."
-            wget -q https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline-tools.zip
-            unzip -q cmdline-tools.zip -d $ANDROID_SDK_ROOT/
-            mkdir -p $ANDROID_SDK_ROOT/tools
-            cp -r $ANDROID_SDK_ROOT/cmdline-tools/* $ANDROID_SDK_ROOT/tools/
-            rm -rf $ANDROID_SDK_ROOT/cmdline-tools cmdline-tools.zip
-          fi
-          # Aceptar todas las licencias
-          echo "Aceptando licencias del SDK..."
-          yes | $ANDROID_SDK_ROOT/tools/bin/sdkmanager --licenses || true
-          # Instalar componentes necesarios (build-tools, platform) para que buildozer no lo haga y falle por licencias
-          $ANDROID_SDK_ROOT/tools/bin/sdkmanager "build-tools;34.0.0" "platforms;android-34" "platform-tools" || true
 
-      - name: 🚀 Compilar APK con Buildozer
+          # Descargar command-line tools de Android (versión estable)
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline-tools.zip
+          unzip -q cmdline-tools.zip -d $ANDROID_SDK_ROOT/
+
+          # Estructura requerida por sdkmanager: .../cmdline-tools/latest/
+          mkdir -p $ANDROID_SDK_ROOT/cmdline-tools/latest
+
+          # Mover todo el contenido extraído a 'latest'
+          for item in $ANDROID_SDK_ROOT/cmdline-tools/*; do
+            if [ "$item" != "$ANDROID_SDK_ROOT/cmdline-tools/latest" ]; then
+              mv "$item"/* $ANDROID_SDK_ROOT/cmdline-tools/latest/ 2>/dev/null || true
+              rm -rf "$item"
+            fi
+          done
+
+          # Aceptar todas las licencias de forma automática
+          yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses --sdk_root=$ANDROID_SDK_ROOT
+
+          # Instalar los componentes necesarios (build-tools, plataforma, platform-tools)
+          $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT \
+            "build-tools;34.0.0" \
+            "platforms;android-34" \
+            "platform-tools"
+
+      # -----------------------------------------------------------------------
+      # 6. COMPILAR EL APK CON BUILDOZER
+      #    Con el SDK ya listo y licencias aceptadas, Buildozer no pedirá nada.
+      # -----------------------------------------------------------------------
+      - name: 🚀 Compilar APK
         run: |
-          export ANDROID_SDK_ROOT=$HOME/.buildozer/android/platform/android-sdk
+          export ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT
+          export ANDROID_HOME=$ANDROID_SDK_ROOT
+          export PATH=$PATH:$ANDROID_SDK_ROOT/platform-tools
           buildozer -v android debug
 
-      - name: 📤 Subir APK como artefacto
+      # -----------------------------------------------------------------------
+      # 7. (OPCIONAL) FIRMAR EL APK SI SE PROPORCIONAN SECRETOS
+      #    Descomenta y configura los secretos en el repositorio.
+      # -----------------------------------------------------------------------
+      # - name: 🔐 Firmar APK (release)
+      #   if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      #   env:
+      #     KEYSTORE: ${{ secrets.KEYSTORE_BASE64 }}
+      #     KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      #     KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+      #     KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      #   run: |
+      #     echo "$KEYSTORE" | base64 -d > mamm.keystore
+      #     # Asumiendo que el APK se generó como bin/*.apk
+      #     apk_path=$(ls bin/*.apk | head -1)
+      #     jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore mamm.keystore \
+      #       -storepass $KEYSTORE_PASSWORD -keypass $KEY_PASSWORD \
+      #       $apk_path $KEY_ALIAS
+
+      # -----------------------------------------------------------------------
+      # 8. SUBIR EL APK COMO ARTEFACTO (siempre disponible)
+      # -----------------------------------------------------------------------
+      - name: ⬆️ Subir APK
         uses: actions/upload-artifact@v4
         with:
-          name: MAMM-KEYBOARD-1-${{ github.run_id }}-${{ matrix.arch }}
+          name: MAMM-KEYBOARD-1-${{ github.run_number }}
           path: bin/*.apk
+
+      # -----------------------------------------------------------------------
+      # 9. (OPCIONAL) NOTIFICACIÓN POR TELEGRAM AL FINALIZAR
+      # -----------------------------------------------------------------------
+      # - name: 📢 Notificar por Telegram
+      #   if: always()
+      #   uses: appleboy/telegram-action@master
+      #   with:
+      #     to: ${{ secrets.TELEGRAM_CHAT_ID }}
+      #     token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      #     message: |
+      #       ✅ Build de MAMM-KEYBOARD-1 completado
+      #       Status: ${{ job.status }}
+      #       Run: ${{ github.run_number }}
+      #       Descarga: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
