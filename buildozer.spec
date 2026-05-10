@@ -7,8 +7,8 @@ source.include_exts = py,png,jpg,kv,atlas,ttf,json,gif,mp3,wav,ogg,ini
 version = 1.0.2
 version.code = 3
 
-# --- Requisitos completos de MAMM-KEYBOARD-1 ---
-requirements = python3,kivy==2.2.1,setuptools,urllib3<2.0.0,six,plyer,pyjnius,ujson,cython==3.0.11,openssl,requests,android,pyzbar,qrcode,Pillow,SpeechRecognition,pyttsx3
+# --- Requisitos (Cython estable 0.29.33 para compatibilidad con Kivy 2.2.1) ---
+requirements = python3,kivy==2.2.1,setuptools,urllib3<2.0.0,six,plyer,pyjnius,ujson,cython==0.29.33,openssl,requests,android,pyzbar,qrcode,Pillow,SpeechRecognition,pyttsx3
 
 # --- Permisos esenciales ---
 android.permissions = \
@@ -25,14 +25,16 @@ android.permissions = \
     CAMERA,\
     RECORD_AUDIO
 
-# --- Versiones de Android (Objetivo API 35 para Android 15) ---
+# --- Versiones de Android optimizadas para Honor Magic 7 Lite y Android 15 ---
 android.api = 35
-android.minapi = 21
+android.minapi = 24
+android.ndk_api = 24
 android.sdk = 35
 android.ndk = 25c
 
+# Rama estable de python-for-android para evitar errores de autoreconf
 p4a.bootstrap = sdl2
-p4a.branch = develop
+p4a.branch = master
 
 # --- Arquitecturas (máxima compatibilidad) ---
 android.archs = arm64-v8a, armeabi-v7a
@@ -62,7 +64,7 @@ android.supports_rtl = True
 android.manifest.launch_mode = singleTop
 android.manifest.theme = @style/Theme.AppCompat.NoActionBar
 
-# --- Icono y Splash Screen (para tu carpeta assets) ---
+# --- Icono y Splash Screen (carpeta assets) ---
 icon.filename = %(source.dir)s/assets/icon.png
 presplash.filename = %(source.dir)s/assets/presplash.png
 
