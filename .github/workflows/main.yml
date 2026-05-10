@@ -39,7 +39,7 @@ jobs:
             unzip
           pip install --user buildozer cython
 
-      - name: 🔑 Accept Android SDK licenses (automático)
+      - name: 🔑 Accept Android SDK licenses
         run: |
           export PATH=$PATH:$HOME/.local/bin
           yes | sdkmanager --licenses || true
