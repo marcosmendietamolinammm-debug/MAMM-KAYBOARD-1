@@ -1,1 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MAMM KEYBOARD 1</string>
+    <string name="keyboard_name">MAMM KEYBOARD 1</string>
+    <string name="author_name">Marcos Abel Mendieta Molina</string>
+    <string name="ime_label">Teclado Inteligente MAMM</string>
+    <string name="ime_settings">Configuración del Teclado</string>
+    <string name="keyboard_description">Teclado personalizado con Motor de Resonancia, Voz, Escaneo QR y funciones avanzadas</string>
+    <string name="lang_es_ec">Español (Ecuador)</string>
+    <string name="lang_es">Español</string>
+    <string name="lang_en">Inglés (US)</string>
+    <string name="mode_voice">Entrada por Voz</string>
+    <string name="mode_qr">Escaneo y Cámara</string>
+    <string name="mode_resonance">Motor de Frecuencia Activo</string>
+</resources>
 
