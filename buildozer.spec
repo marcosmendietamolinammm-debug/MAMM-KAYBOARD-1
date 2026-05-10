@@ -3,7 +3,7 @@
 # ============================================================
 # MAMM-KEYBOARD-1 - OBRA MAESTRA TECNOLÓGICA
 # ARQUITECTO: MARCOS ABEL MENDIETA MOLINA
-# COMPATIBLE: ANDROID 16 (API 36) | HONOR MAGIC 7 LITE
+# COMPATIBLE: ANDROID 15 (API 35) | HONOR MAGIC 7 LITE
 # CARACTERÍSTICAS: ESTACIÓN DE SERVICIO | FRECUENCIAS 60/62 Hz
 # DISEÑO: AZUL MARINO OSCURO + LETRAS DORADAS
 # ============================================================
@@ -19,7 +19,7 @@ version.code = 4
 # --- LIBRERÍAS EXACTAS (SIN FALTANTES, SIN ERRORES, TECNOLOGÍA ASEGURADA) ---
 requirements = python3,kivy==2.2.1,setuptools,urllib3<2.0.0,six,plyer,pyjnius,ujson,cython==0.29.33,openssl,requests,android,pyzbar,qrcode,Pillow,SpeechRecognition,pyttsx3
 
-# --- PERMISOS TOTALES (TODO LO QUE NECESITAS + ANDROID 16 OBLIGATORIOS) ---
+# --- PERMISOS TOTALES (TODO LO QUE NECESITAS + ANDROID 15 OBLIGATORIOS) ---
 android.permissions = 
     BIND_INPUT_METHOD,
     INTERNET,
@@ -98,14 +98,17 @@ android.manifest_placeholders =
 
 android.meta_data = android.view.im=@xml/method
 
-# --- VERSIONES ANDROID 16 (TU TECNOLOGÍA AL MÁXIMO, COMPATIBLE HACIA ATRÁS) ---
-android.api = 36
-android.target_sdk_version = 36
+# ==================================================
+# ⚠️ RECTIFICACIÓN EXACTA SEGÚN TU INDICACIÓN
+# android.api = 35 | android.ndk = 26b
+# ==================================================
+android.api = 35
+android.target_sdk_version = 35
 android.minapi = 28
 android.ndk_api = 28
-android.sdk = 36
-android.ndk = 27b
-android.compile_sdk = 36
+android.sdk = 35
+android.ndk = 26b
+android.compile_sdk = 35
 
 # --- MOTOR DE COMPILACIÓN OPTIMIZADO (VELOCIDAD Y SEGURIDAD) ---
 p4a.bootstrap = sdl2
