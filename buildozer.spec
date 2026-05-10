@@ -25,10 +25,10 @@ android.permissions = \
     CAMERA,\
     RECORD_AUDIO
 
-# --- Versiones de Android (corregidas para compilación estable) ---
-android.api = 34
+# --- Versiones de Android (Objetivo API 35 para Android 15) ---
+android.api = 35
 android.minapi = 21
-android.sdk = 33
+android.sdk = 35
 android.ndk = 25c
 
 p4a.bootstrap = sdl2
