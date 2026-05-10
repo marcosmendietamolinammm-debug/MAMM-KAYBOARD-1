@@ -27,8 +27,8 @@ android.permissions = \
 
 # --- Versiones de Android optimizadas para Honor Magic 7 Lite y Android 15 ---
 android.api = 35
-android.minapi = 24
-android.ndk_api = 24
+android.minapi = 28
+android.ndk_api = 28
 android.sdk = 35
 android.ndk = 25c
 
@@ -36,8 +36,8 @@ android.ndk = 25c
 p4a.bootstrap = sdl2
 p4a.branch = master
 
-# --- Arquitecturas (máxima compatibilidad) ---
-android.archs = arm64-v8a, armeabi-v7a
+# --- Arquitectura EXCLUSIVA para tu dispositivo (arm64-v8a) ---
+android.archs = arm64-v8a
 
 android.enable_androidx = True
 android.gradle_dependencies = \
