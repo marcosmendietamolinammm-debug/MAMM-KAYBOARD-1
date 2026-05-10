@@ -37,17 +37,34 @@ jobs:
             git \
             wget \
             unzip
-          pip install --user buildozer cython
 
-      - name: 🔑 Accept Android SDK licenses (force)
+      - name: 📦 Install Buildozer and Cython
+        run: |
+          pip install --user buildozer "cython<3.0"
+
+      - name: 🔧 Install Android SDK and accept licenses (force)
         run: |
           export PATH=$PATH:$HOME/.local/bin
+          # Descargar command-line tools
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+          unzip -q commandlinetools-linux-11076708_latest.zip
+          mkdir -p $HOME/android-sdk/cmdline-tools
+          mv cmdline-tools $HOME/android-sdk/cmdline-tools/latest
+          export ANDROID_SDK_ROOT=$HOME/android-sdk
+          export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin
+          # Aceptar todas las licencias
           yes | sdkmanager --licenses || true
+          # Instalar build-tools específicas (las que necesita Buildozer)
+          yes | sdkmanager "build-tools;34.0.0" "platform-tools" "platforms;android-34"
+          # También instalar build-tools 33.0.0 por si acaso
+          yes | sdkmanager "build-tools;33.0.0"
 
       - name: 📦 Build APK with Buildozer
         run: |
           export PATH=$PATH:$HOME/.local/bin
-          buildozer android debug
+          export ANDROID_SDK_ROOT=$HOME/android-sdk
+          export ANDROID_HOME=$HOME/android-sdk
+          buildozer -v android debug
         env:
           ACCEPT_SDK_LICENSE: "yes"
 
