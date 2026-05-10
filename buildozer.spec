@@ -26,6 +26,7 @@ android.permissions = \
 
 android.api = 34
 android.minapi = 21
+# android.sdk = 33   (eliminado por obsoleto)
 android.ndk = 25b
 android.build_tools_version = 34.0.0
 
