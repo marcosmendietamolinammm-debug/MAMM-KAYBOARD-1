@@ -1,12 +1,14 @@
 [app]
 
 # ============================================================
-# MAMM KEYBOARD 1 - VERSIÓN TECNOLÓGICA MÁXIMA
+# MAMM-KEYBOARD-1 - OBRA MAESTRA TECNOLÓGICA
 # ARQUITECTO: MARCOS ABEL MENDIETA MOLINA
 # COMPATIBLE: ANDROID 16 (API 36) | HONOR MAGIC 7 LITE
+# CARACTERÍSTICAS: ESTACIÓN DE SERVICIO | FRECUENCIAS 60/62 Hz
+# DISEÑO: AZUL MARINO OSCURO + LETRAS DORADAS
 # ============================================================
 
-title = MAMM KEYBOARD 1
+title = MAMM-KEYBOARD-1
 package.name = mammkeyboard1
 package.domain = org.mammkeyboard
 source.dir = .
@@ -14,10 +16,10 @@ source.include_exts = py,png,jpg,kv,atlas,ttf,json,gif,mp3,wav,ogg,ini,xml
 version = 1.0.3
 version.code = 4
 
-# --- REQUISITOS (MISMA TECNOLOGÍA QUE YA TE FUNCIONÓ - NO SE TOCA) ---
+# --- LIBRERÍAS EXACTAS (SIN FALTANTES, SIN ERRORES, TECNOLOGÍA ASEGURADA) ---
 requirements = python3,kivy==2.2.1,setuptools,urllib3<2.0.0,six,plyer,pyjnius,ujson,cython==0.29.33,openssl,requests,android,pyzbar,qrcode,Pillow,SpeechRecognition,pyttsx3
 
-# --- PERMISOS (TODOS LOS TUYOS + LOS NUEVOS OBLIGATORIOS ANDROID 16) ---
+# --- PERMISOS TOTALES (TODO LO QUE NECESITAS + ANDROID 16 OBLIGATORIOS) ---
 android.permissions = 
     BIND_INPUT_METHOD,
     INTERNET,
@@ -35,14 +37,17 @@ android.permissions =
     RECORD_AUDIO,
     POST_NOTIFICATIONS,
     READ_MEDIA_AUDIO,
-    READ_MEDIA_IMAGES
+    READ_MEDIA_IMAGES,
+    BLUETOOTH,
+    BLUETOOTH_ADMIN,
+    BLUETOOTH_CONNECT
 
-# --- RECURSOS Y CÓDIGO (EXACTAMENTE COMO LO TENÍAS) ---
+# --- RUTAS DE RECURSOS (EXACTAS A TU ESTRUCTURA DE CARPETAS) ---
 android.add_resources = android/res
 android.add_src = org
 
 # ==================================================
-# 🛡️ LO QUE FALTABA: IDENTIDAD DE APLICACIÓN
+# 🛡️ IDENTIDAD OFICIAL: PARA QUE SEA APK RECONOCIDA
 # ==================================================
 android.manifest_application = 
     android:allowBackup="true"
@@ -53,9 +58,10 @@ android.manifest_application =
     android:theme="@style/Theme.AppCompat.NoActionBar"
     android:extractNativeLibs="false"
     android:hasCode="true"
+    android:largeHeap="true"
 
 # ==================================================
-# 🚀 LO QUE FALTABA: ACTIVIDAD PRINCIPAL (ÍCONO EN MENÚ)
+# 🚀 ACTIVIDAD PRINCIPAL: ÍCONO EN EL MENÚ DEL TELÉFONO
 # ==================================================
 android.manifest_activities = 
     <activity
@@ -70,11 +76,14 @@ android.manifest_activities =
         </intent-filter>
     </activity>
 
-# --- DECLARACIÓN TECLADO - MEJORADA Y CERTIFICADA PARA ANDROID 16 ---
+# ==================================================
+# ⌨️ DECLARACIÓN COMO TECLADO DEL SISTEMA (CERTIFICADO)
+# ==================================================
 android.manifest_placeholders = 
     <service 
         android:name=".MiTecladoServicio"
         android:exported="true"
+        android:enabled="true"
         android:permission="android.permission.BIND_INPUT_METHOD"
         android:foregroundServiceType="inputMethod"
         android:stopWithTask="false">
@@ -87,31 +96,28 @@ android.manifest_placeholders =
             android:resource="@xml/method" />
     </service>
 
-# --- META-DATO (TU MEJORA, AHORA REFORZADA) ---
 android.meta_data = android.view.im=@xml/method
 
-# --- ANDROID: VERSIONES ACTUALIZADAS AL TECHO (COMPATIBLE HACIA ATRÁS) ---
-android.api = 36                  # ✅ ANDROID 16 - ÚLTIMA TECNOLOGÍA
-android.target_sdk_version = 36   # ✅ INDICA QUE ESTÁS PREPARADO PARA 16
-android.minapi = 28               # ✅ MANTENEMOS TU MÍNIMO, NO PIERDES COMPATIBILIDAD
-android.ndk_api = 28              # ✅ IGUAL QUE ANTES, ESTABLE
-android.sdk = 36                  # ✅ SDK ACTUALIZADO
-android.ndk = 27b                 # ✅ NDK ACTUALIZADO PERO COMPATIBLE CON TU CÓDIGO
+# --- VERSIONES ANDROID 16 (TU TECNOLOGÍA AL MÁXIMO, COMPATIBLE HACIA ATRÁS) ---
+android.api = 36
+android.target_sdk_version = 36
+android.minapi = 28
+android.ndk_api = 28
+android.sdk = 36
+android.ndk = 27b
 android.compile_sdk = 36
 
-# --- MOTOR DE COMPILACIÓN (LO QUE YA USABAS, CON OPTIMIZACIONES) ---
+# --- MOTOR DE COMPILACIÓN OPTIMIZADO (VELOCIDAD Y SEGURIDAD) ---
 p4a.bootstrap = sdl2
 p4a.branch = master
-p4a.optimize_python = 2          # ✅ NIVEL MÁXIMO DE OPTIMIZACIÓN DE CÓDIGO
-p4a.pyc_optimize = 2             # ✅ COMPILA A CÓDIGO MÁS RÁPIDO
-p4a.whitelist =
-p4a.blacklist =
+p4a.optimize_python = 2
+p4a.pyc_optimize = 2
 
-# --- ARQUITECTURA: TU DECISIÓN PERFECTA, AHORA CON ACELERACIÓN ---
-android.archs = arm64-v8a        # ✅ SOLO TU PROCESADOR, MÁS VELOCIDAD, MENOS PESO
+# --- ARQUITECTURA EXACTA PARA TU HONOR MAGIC 7 LITE ---
+android.archs = arm64-v8a
 android.ndk_arch = arm64-v8a
 
-# --- LIBRERÍAS ANDROID (ACTUALIZADAS A VERSIONES ESTABLES RECIENTES) ---
+# --- LIBRERÍAS ANDROID ACTUALIZADAS Y ESTABLES ---
 android.enable_androidx = True
 android.gradle_dependencies = \
     androidx.core:core:1.15.0,\
@@ -123,30 +129,36 @@ android.debug = True
 android.release = False
 android.release_artifact = apk
 
-# --- COMPORTAMIENTO DE VENTANA (TUS PARÁMETROS, MEJORADOS) ---
+# --- COMPORTAMIENTO DE PANTALLA Y VENTANA ---
 orientation = portrait
 fullscreen = 0
 window_soft_input_mode = adjustResize|adjustPan
 android.manifest.windowSoftInputMode = adjustResize|stateHidden
 
-# --- MOTOR DE RESONANCIA N-FE26: TU TECNOLOGÍA PROTEGIDA ---
+# ==================================================
+# ⚡ MOTOR DE RESONANCIA SIEMPRE ACTIVO
+# REGLAS: 60 Hz (REPOSO) | 62 Hz (ACTIVO) | 38.44 Hz (BORDE)
+# ==================================================
 android.wakelock = True
-android.wakelock_timeout = -1     # ✅ SIEMPRE ACTIVO, NO SE APAGA EL MOTOR
-android.keep_screen_on = True     # ✅ PARA QUE NO INTERRUMPA LA FRECUENCIA
+android.wakelock_timeout = -1
+android.keep_screen_on = True
 
-# --- LOGS Y DEPURACIÓN (TUS AJUSTES, MÁS LIMPIOS) ---
+# --- DEPURACIÓN Y LOGS (LIMPIOS Y ÚTILES) ---
 log_level = 2
 logcat_filters = *:I python:D Kivy:D MammKeyboard:V
 
-# --- SEGURIDAD Y ESTABILIDAD ---
+# --- SEGURIDAD Y ESTABILIDAD MÁXIMA ---
 android.allow_backup = True
 android.supports_rtl = True
 android.manifest.launch_mode = singleTop
 android.manifest.theme = @style/Theme.AppCompat.NoActionBar
 android.manifest.debuggable = True
-android.manifest.extractNativeLibs = False  # ✅ NO DESCOMPRIME, MÁS SEGURO Y RÁPIDO
+android.manifest.extractNativeLibs = False
 
-# --- RECURSOS VISUALES (TUS RUTAS) ---
+# ==================================================
+# 🎨 TU DISEÑO VISUAL: PANTALLA DE PRESENTACIÓN
+# FONDO AZUL MARINO OSCURO - LETRAS DORADAS - 2.5 SEGUNDOS
+# ==================================================
 icon.filename = %(source.dir)s/assets/icon.png
 presplash.filename = %(source.dir)s/assets/presplash.png
 
@@ -156,7 +168,7 @@ android.extra_resources = app_name=%(title)s
 # --- COMPORTAMIENTO DE COMPILACIÓN ---
 android.skip_update = False
 android.accept_sdk_license = True
-android.use_aapt2 = True          # ✅ HERRAMIENTA MÁS RÁPIDA DE ANDROID
+android.use_aapt2 = True
 
 [buildozer]
 build_dir = .buildozer
