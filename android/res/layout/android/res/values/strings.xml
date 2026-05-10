@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">MAMM KEYBOARD 1</string>
-    <string name="keyboard_name">MAMM KEYBOARD 1</string>
+    <!-- ✅ NOMBRE OFICIAL EXACTO: TAL CUAL LO PEDISTE -->
+    <string name="app_name">MAMM-KEYBOARD-1</string>
+    <string name="keyboard_name">MAMM-KEYBOARD-1</string>
     <string name="author_name">Marcos Abel Mendieta Molina</string>
     <string name="ime_label">Teclado Inteligente MAMM</string>
     <string name="ime_settings">Configuración del Teclado</string>
@@ -9,8 +10,36 @@
     <string name="lang_es_ec">Español (Ecuador)</string>
     <string name="lang_es">Español</string>
     <string name="lang_en">Inglés (US)</string>
+    <string name="lang_de">Alemán</string>
+    <string name="lang_fr">Francés</string>
+    <string name="lang_pt">Portugués</string>
+    <string name="lang_ru">Ruso</string>
+    <string name="lang_zh">Chino</string>
+    <string name="lang_ja">Japonés</string>
+    <string name="lang_it">Italiano</string>
+    <string name="lang_ko">Coreano</string>
+    <string name="lang_ar">Árabe</string>
+    <string name="lang_nl">Holandés</string>
+    <string name="lang_sv">Sueco</string>
+    <string name="lang_pl">Polaco</string>
+    <string name="lang_tr">Turco</string>
+    <string name="lang_vi">Vietnamita</string>
+    <string name="lang_th">Tailandés</string>
+    <string name="lang_hi">Hindi</string>
+    <string name="lang_he">Hebreo</string>
+    <string name="lang_id">Indonesio</string>
     <string name="mode_voice">Entrada por Voz</string>
     <string name="mode_qr">Escaneo y Cámara</string>
     <string name="mode_resonance">Motor de Frecuencia Activo</string>
+    <string name="mode_game">Modo Juego</string>
+    <string name="mode_pc">Modo PC / Bluetooth</string>
+    <string name="mode_writer">Modo Escritura</string>
+    <string name="mode_vpn">VPN Segura</string>
+    <string name="mode_incognito">Modo Incógnito</string>
+    <string name="mode_shield">Trituración SHIELD</string>
+    <string name="msg_copied">Texto copiado al portapapeles</string>
+    <string name="msg_qr_ready">Código QR generado</string>
+    <string name="msg_encrypted">PDF Encriptado - Clave de 6 dígitos</string>
 </resources>
+
 
